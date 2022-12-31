@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<RootNamespace>PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ConfigurationLib</RootNamespace>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<TreatSpecificWarningsAsErrors />
+		<NoWarn>$(NoWarn);NU5104</NoWarn>
+		<LangVersion>11</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Version>0.0.1</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+	</ItemGroup>
+
+</Project>
