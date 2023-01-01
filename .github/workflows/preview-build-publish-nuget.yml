@@ -12,7 +12,7 @@ jobs:
       CONFIGURATION: Release
       DOTNET_VERSION: 7.0.x
       NUGET_VERSION: 0.0.1-preview.${{ github.run_number }}
-      SRC_DIRECTORY_PATH: ${{ github.workspace }}/src/EfCoreCosmosDbIndexConfigurationLib/src
+      SRC_DIRECTORY_PATH: ${{ github.workspace }}/EfCoreCosmosDbIndexConfigurationLib/src
       PROJECT_NAME: EfCoreCosmosDbIndexConfigurationLib
 
     steps:
@@ -22,7 +22,7 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Cake Frosting Build
-      run: dotnet run --project build/build/Build.csproj -- --configuration=${{ env.CONFIGURATION }} --srcDirectoryPath=${{ env.SRC_DIRECTORY_PATH }} --nugetVersion=${{ env.NUGET_VERSION }}
+      run: dotnet run --project EfCoreCosmosDbIndexConfigurationLib/build/Build.csproj -- --configuration=${{ env.CONFIGURATION }} --srcDirectoryPath=${{ env.SRC_DIRECTORY_PATH }} --nugetVersion=${{ env.NUGET_VERSION }}
     - name: Publish NuGet
       run: dotnet nuget push "${{ env.SRC_DIRECTORY_PATH }}/${{ env.PROJECT_NAME }}/bin/${{ env.CONFIGURATION }}/cake-build-output/*${{ env.NUGET_VERSION }}.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_API_KEY }}
 
