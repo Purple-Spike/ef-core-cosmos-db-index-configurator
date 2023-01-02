@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<RootNamespace>PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ConfigurationLib</RootNamespace>
+		<AssemblyName>PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ConfigurationLib</AssemblyName>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -13,6 +14,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Version>0.0.1</Version>
+		<PackageProjectUrl>https://github.com/Purple-Spike/ef-core-cosmos-db-index-configurator</PackageProjectUrl>
+		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
 
 	<ItemGroup>
