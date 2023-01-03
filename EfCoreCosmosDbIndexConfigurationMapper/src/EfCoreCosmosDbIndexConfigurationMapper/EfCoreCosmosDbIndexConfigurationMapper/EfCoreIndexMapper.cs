@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -41,7 +42,7 @@ public class EfCoreIndexMapper : IEfCoreIndexMapper
         foreach (var dbSetProperty in dbSetProperties)
         {
             var genericType = dbSetProperty.PropertyType.GenericTypeArguments.Single();
-            var includedIndexes = LoadIncludedIndexesForType(genericType);
+            var includedIndexes = LoadIncludedIndexesForType(genericType, indexPath: "/");
 
             var mappedIndexes = new MappedIndexes(Container: dbSetProperty.Name, includedIndexes);
             builder.Add(mappedIndexes);
@@ -50,7 +51,7 @@ public class EfCoreIndexMapper : IEfCoreIndexMapper
         return builder.MoveToImmutable();
     }
 
-    private ImmutableArray<MappedIndexes.MappedIndex> LoadIncludedIndexesForType(Type genericType)
+    private ImmutableArray<MappedIndexes.MappedIndex> LoadIncludedIndexesForType(Type genericType, string indexPath)
     {
         var builder = ImmutableArray.CreateBuilder<MappedIndexes.MappedIndex>();
 
@@ -59,10 +60,49 @@ public class EfCoreIndexMapper : IEfCoreIndexMapper
             if (property.GetMethod is object
                 && !property.GetMethod.IsStatic)
             {
+                var propertyIndexPath = $"{indexPath}{property.Name}/";
+
                 var includeIndexAttr = property.GetCustomAttribute<IncludeIndexAttribute>();
                 if (includeIndexAttr is object)
                 {
-                    Console.WriteLine(property.Name);
+                    MappedIndexes.MappedIndex mappedIndex;
+                    if (IsPropertyScalar(property))
+                    {
+                        mappedIndex = new MappedIndexes.MappedIndex($"{propertyIndexPath}?");
+                    }
+                    else
+                    {
+                        mappedIndex = new MappedIndexes.MappedIndex($"{propertyIndexPath}*");
+                    }
+
+                    builder.Add(mappedIndex);
+                }
+                else if (property.PropertyType.IsAssignableTo(typeof(IEnumerable)))
+                {
+                    if (property.PropertyType.IsGenericType)
+                    {
+                        //List<> or Something like that
+                        foreach (var genericArgumentType in property.PropertyType.GenericTypeArguments)
+                        {
+                            var collectionSubTypes = LoadIncludedIndexesForType(genericArgumentType, $"{propertyIndexPath}[]/");
+                            builder.AddRange(collectionSubTypes);
+                        }
+                    }
+                    else if (property.PropertyType.IsArray)
+                    {
+                        //An array
+                        var elementType = property.PropertyType.GetElementType();
+                        if (elementType is object)
+                        {
+                            var collectionSubTypes = LoadIncludedIndexesForType(elementType, $"{propertyIndexPath}[]/");
+                            builder.AddRange(collectionSubTypes);
+                        }
+                    }
+                }
+                else if (property.PropertyType != typeof(object))
+                {
+                    var objectSubTypes = LoadIncludedIndexesForType(property.PropertyType, $"{propertyIndexPath}");
+                    builder.AddRange(objectSubTypes);
                 }
             }
         }
@@ -97,5 +137,18 @@ public class EfCoreIndexMapper : IEfCoreIndexMapper
         }
 
         return customContextType;
+    }
+
+    private bool IsPropertyScalar(PropertyInfo property)
+    {
+        return property.PropertyType.IsAssignableTo(typeof(string))
+               || property.PropertyType.IsAssignableTo(typeof(int))
+               || property.PropertyType.IsAssignableTo(typeof(decimal))
+               || property.PropertyType.IsAssignableTo(typeof(double))
+               || property.PropertyType.IsAssignableTo(typeof(float))
+               || property.PropertyType.IsAssignableTo(typeof(Guid))
+               || property.PropertyType.IsAssignableTo(typeof(DateTime))
+               || property.PropertyType.IsAssignableTo(typeof(DateOnly))
+               || property.PropertyType.IsAssignableTo(typeof(TimeOnly));
     }
 }

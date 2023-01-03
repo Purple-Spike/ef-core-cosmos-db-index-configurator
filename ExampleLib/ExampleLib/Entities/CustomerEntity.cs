@@ -20,7 +20,8 @@ public class CustomerEntity
 
     public required int BirthYear { get; set; }
 
-    public required List<OrderSubEntity> Orders { get; set; }
+    public required List<OrderSubEntity> OrdersList { get; set; }
+    public required OrderSubEntity[] OrdersArray { get; set; }
 
     public class OrderSubEntity
     {
