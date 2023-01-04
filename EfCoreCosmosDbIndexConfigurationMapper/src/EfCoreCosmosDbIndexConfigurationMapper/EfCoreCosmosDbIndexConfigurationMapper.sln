@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfCoreCosmosDbIndexConfigur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{7C98B32E-5201-4132-A1CD-C406A721B67D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleLib", "ExampleLib\ExampleLib.csproj", "{DF1E40C6-B178-4EC0-B2C2-7330B49DBB2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7C98B32E-5201-4132-A1CD-C406A721B67D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C98B32E-5201-4132-A1CD-C406A721B67D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C98B32E-5201-4132-A1CD-C406A721B67D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF1E40C6-B178-4EC0-B2C2-7330B49DBB2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF1E40C6-B178-4EC0-B2C2-7330B49DBB2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF1E40C6-B178-4EC0-B2C2-7330B49DBB2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF1E40C6-B178-4EC0-B2C2-7330B49DBB2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

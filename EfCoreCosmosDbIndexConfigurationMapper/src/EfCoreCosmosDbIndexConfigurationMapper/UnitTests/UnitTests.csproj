@@ -27,6 +27,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\EfCoreCosmosDbIndexConfigurationMapper\EfCoreCosmosDbIndexConfigurationMapper.csproj" />
+		<ProjectReference Include="..\ExampleLib\ExampleLib.csproj" />
 	</ItemGroup>
 
 </Project>

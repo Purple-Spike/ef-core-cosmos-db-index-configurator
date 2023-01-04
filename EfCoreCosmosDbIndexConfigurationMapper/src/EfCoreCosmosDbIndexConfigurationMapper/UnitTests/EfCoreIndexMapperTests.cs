@@ -21,7 +21,9 @@ public class EfCoreIndexMapperTests
     [Fact]
     public void WhenLoadingTypes()
     {
-        var assembly = Assembly.LoadFile("C:/GitHub/Purple-Spike/ef-core-cosmos-db-index-configurator/ExampleLib/ExampleLib/bin/Debug/net7.0/ExampleLib.dll");
+        var pwd = Directory.GetCurrentDirectory();
+        var resultPath = pwd + "/../../../../ExampleLib/bin/Debug/net7.0/ExampleLib.dll";
+        var assembly = Assembly.LoadFile(resultPath);
         var contextPath = "PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ExampleLib.MyDbContext";
         var mappedIndexes = _mapper.MapIndexes(assembly, contextPath);
         
@@ -29,6 +31,7 @@ public class EfCoreIndexMapperTests
         
         var customersContainer = mappedIndexes.Single(x => x.Container == "Customers");
         customersContainer.IncludedIndexes.Length.ShouldBe(12);
+        
         customersContainer.IncludedIndexes.Any(x => x.Path == "/EntityId/?").ShouldBeTrue();
         customersContainer.IncludedIndexes.Any(x => x.Path == "/FirstName/?").ShouldBeTrue();
 
@@ -45,6 +48,9 @@ public class EfCoreIndexMapperTests
         customersContainer.IncludedIndexes.Any(x => x.Path == "/OrdersArray/[]/ProductSummary/Review/EntityId/?").ShouldBeTrue();
 
         var productsContainer = mappedIndexes.Single(x => x.Container == "Products");
+
+        productsContainer.IncludedIndexes.Length.ShouldBe(9);
+        
         productsContainer.IncludedIndexes.Any(x => x.Path == "/EntityId/?").ShouldBeTrue();
         productsContainer.IncludedIndexes.Any(x => x.Path == "/ProductName/?").ShouldBeTrue();
         productsContainer.IncludedIndexes.Any(x => x.Path == "/IsEnabled/?").ShouldBeTrue();
