@@ -22,6 +22,9 @@ public class MyDbContext : DbContext
     [NotNull]
     public DbSet<CustomerEntity>? Customers { get; set; }
 
+    [NotNull]
+    public DbSet<ProductEntity>? Products { get; set; }
+
     public MyDbContext(DbContextOptions<MyDbContext> options, MyDatabaseConfig databaseConfig)
         : base(options)
     {
@@ -44,6 +47,12 @@ public class MyDbContext : DbContext
     {
         _ = modelBuilder.Entity<CustomerEntity>()
             .ToContainer(nameof(Customers))
+            .HasPartitionKey(x => x.EntityId)
+            .HasNoDiscriminator()
+            .HasKey(x => x.EntityId);
+
+        _ = modelBuilder.Entity<ProductEntity>()
+            .ToContainer(nameof(Products))
             .HasPartitionKey(x => x.EntityId)
             .HasNoDiscriminator()
             .HasKey(x => x.EntityId);

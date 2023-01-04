@@ -99,7 +99,8 @@ public class EfCoreIndexMapper : IEfCoreIndexMapper
                         }
                     }
                 }
-                else if (property.PropertyType != typeof(object))
+                else if (property.PropertyType != typeof(object) 
+                    && !IsPropertyScalar(property))
                 {
                     var objectSubTypes = LoadIncludedIndexesForType(property.PropertyType, $"{propertyIndexPath}");
                     builder.AddRange(objectSubTypes);
@@ -146,6 +147,9 @@ public class EfCoreIndexMapper : IEfCoreIndexMapper
                || property.PropertyType.IsAssignableTo(typeof(decimal))
                || property.PropertyType.IsAssignableTo(typeof(double))
                || property.PropertyType.IsAssignableTo(typeof(float))
+               || property.PropertyType.IsAssignableTo(typeof(long))
+               || property.PropertyType.IsAssignableTo(typeof(short))
+               || property.PropertyType.IsAssignableTo(typeof(bool))
                || property.PropertyType.IsAssignableTo(typeof(Guid))
                || property.PropertyType.IsAssignableTo(typeof(DateTime))
                || property.PropertyType.IsAssignableTo(typeof(DateOnly))

@@ -32,5 +32,29 @@ public class CustomerEntity
         public required Guid OrderNumber { get; set; }
 
         public required string ProductName { get; set; }
+
+        public required ProductSummarySubEntity ProductSummary { get; set; }
+    }
+
+    public class ProductSummarySubEntity
+    {
+        [IncludeIndex]
+        public required Guid EntityId { get; set; }
+
+        [IncludeIndex]
+        public required string Name { get; set; }
+
+        public required DateTime PurchaseDateTimeUtc { get; set; }
+
+        public ProductReviewOrderSubEntity? Review { get; set; }
+
+        public class ProductReviewOrderSubEntity
+        {
+            [IncludeIndex]
+            public required Guid EntityId { get; set; }
+
+            public required int Stars { get; set; }
+            public string? Comment { get; set; }
+        }
     }
 }

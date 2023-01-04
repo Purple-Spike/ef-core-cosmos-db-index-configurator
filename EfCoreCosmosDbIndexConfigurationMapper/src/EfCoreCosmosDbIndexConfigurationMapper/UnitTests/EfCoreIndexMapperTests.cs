@@ -25,15 +25,34 @@ public class EfCoreIndexMapperTests
         var contextPath = "PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ExampleLib.MyDbContext";
         var mappedIndexes = _mapper.MapIndexes(assembly, contextPath);
         
-        mappedIndexes.Length.ShouldBe(1);
+        mappedIndexes.Length.ShouldBe(2);
         
         var customersContainer = mappedIndexes.Single(x => x.Container == "Customers");
-        customersContainer.IncludedIndexes.Length.ShouldBe(6);
+        customersContainer.IncludedIndexes.Length.ShouldBe(12);
         customersContainer.IncludedIndexes.Any(x => x.Path == "/EntityId/?").ShouldBeTrue();
         customersContainer.IncludedIndexes.Any(x => x.Path == "/FirstName/?").ShouldBeTrue();
+
         customersContainer.IncludedIndexes.Any(x => x.Path == "/OrdersList/[]/EntityId/?").ShouldBeTrue();
         customersContainer.IncludedIndexes.Any(x => x.Path == "/OrdersList/[]/OrderNumber/?").ShouldBeTrue();
+        customersContainer.IncludedIndexes.Any(x => x.Path == "/OrdersList/[]/ProductSummary/EntityId/?").ShouldBeTrue();
+        customersContainer.IncludedIndexes.Any(x => x.Path == "/OrdersList/[]/ProductSummary/Name/?").ShouldBeTrue();
+        customersContainer.IncludedIndexes.Any(x => x.Path == "/OrdersList/[]/ProductSummary/Review/EntityId/?").ShouldBeTrue();
+
         customersContainer.IncludedIndexes.Any(x => x.Path == "/OrdersArray/[]/EntityId/?").ShouldBeTrue();
         customersContainer.IncludedIndexes.Any(x => x.Path == "/OrdersArray/[]/OrderNumber/?").ShouldBeTrue();
+        customersContainer.IncludedIndexes.Any(x => x.Path == "/OrdersArray/[]/ProductSummary/EntityId/?").ShouldBeTrue();
+        customersContainer.IncludedIndexes.Any(x => x.Path == "/OrdersArray/[]/ProductSummary/Name/?").ShouldBeTrue();
+        customersContainer.IncludedIndexes.Any(x => x.Path == "/OrdersArray/[]/ProductSummary/Review/EntityId/?").ShouldBeTrue();
+
+        var productsContainer = mappedIndexes.Single(x => x.Container == "Products");
+        productsContainer.IncludedIndexes.Any(x => x.Path == "/EntityId/?").ShouldBeTrue();
+        productsContainer.IncludedIndexes.Any(x => x.Path == "/ProductName/?").ShouldBeTrue();
+        productsContainer.IncludedIndexes.Any(x => x.Path == "/IsEnabled/?").ShouldBeTrue();
+        productsContainer.IncludedIndexes.Any(x => x.Path == "/NonDecimalPrice/?").ShouldBeTrue();
+        productsContainer.IncludedIndexes.Any(x => x.Path == "/DisplayPrice/?").ShouldBeTrue();
+        productsContainer.IncludedIndexes.Any(x => x.Path == "/CreateDateTime/?").ShouldBeTrue();
+        productsContainer.IncludedIndexes.Any(x => x.Path == "/PopularityRating/?").ShouldBeTrue();
+        productsContainer.IncludedIndexes.Any(x => x.Path == "/DisplayOrder/?").ShouldBeTrue();
+        productsContainer.IncludedIndexes.Any(x => x.Path == "/UserPoints/?").ShouldBeTrue();
     }
 }
