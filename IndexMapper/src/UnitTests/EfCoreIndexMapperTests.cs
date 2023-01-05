@@ -21,17 +21,22 @@ public class EfCoreIndexMapperTests
     [Fact]
     public void WhenLoadingTypes()
     {
+        var releaseMode = "Release";
+#if DEBUG
+        releaseMode = "Debug";
+#endif
+
         var pwd = Directory.GetCurrentDirectory();
-        var resultPath = pwd + "/../../../../ExampleLib/bin/Debug/net7.0/ExampleLib.dll";
+        var resultPath = pwd + $"/../../../../ExampleLib/bin/{releaseMode}/net7.0/ExampleLib.dll";
         var assembly = Assembly.LoadFile(resultPath);
         var contextPath = "PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ExampleLib.MyDbContext";
         var mappedIndexes = _mapper.MapIndexes(assembly, contextPath);
-        
+
         mappedIndexes.Length.ShouldBe(2);
-        
+
         var customersContainer = mappedIndexes.Single(x => x.Container == "Customers");
         customersContainer.IncludedIndexes.Length.ShouldBe(12);
-        
+
         customersContainer.IncludedIndexes.Any(x => x.Path == "/EntityId/?").ShouldBeTrue();
         customersContainer.IncludedIndexes.Any(x => x.Path == "/FirstName/?").ShouldBeTrue();
 
@@ -50,7 +55,7 @@ public class EfCoreIndexMapperTests
         var productsContainer = mappedIndexes.Single(x => x.Container == "Products");
 
         productsContainer.IncludedIndexes.Length.ShouldBe(9);
-        
+
         productsContainer.IncludedIndexes.Any(x => x.Path == "/EntityId/?").ShouldBeTrue();
         productsContainer.IncludedIndexes.Any(x => x.Path == "/ProductName/?").ShouldBeTrue();
         productsContainer.IncludedIndexes.Any(x => x.Path == "/IsEnabled/?").ShouldBeTrue();
