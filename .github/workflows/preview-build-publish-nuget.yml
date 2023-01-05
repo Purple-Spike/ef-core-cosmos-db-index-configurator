@@ -2,33 +2,31 @@ name: Build/Publish Preview Nuget
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     env:
       CONFIGURATION: Release
       DOTNET_VERSION: 7.0.x
       NUGET_VERSION: 0.0.1-preview.${{ github.run_number }}
-      SRC_DIRECTORY_PATH_LIB: ${{ github.workspace }}/EfCoreCosmosDbIndexConfigurationLib/src
-      PROJECT_NAME_LIB: EfCoreCosmosDbIndexConfigurationLib
-      SRC_DIRECTORY_PATH_MAPPER: ${{ github.workspace }}/EfCoreCosmosDbIndexConfigurationMapper/src
-      PROJECT_NAME_MAPPER: EfCoreCosmosDbIndexConfigurationMapper
+      SRC_DIRECTORY_PATH_LIB: ${{ github.workspace }}/ClientLib/src
+      PROJECT_NAME_LIB: ClientLib
+      SRC_DIRECTORY_PATH_MAPPER: ${{ github.workspace }}/IndexMapper/src
+      PROJECT_NAME_MAPPER: IndexMapper
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    - name: Cake Frosting Build - Lib
-      run: dotnet run --project ${{ env.PROJECT_NAME_LIB }}/build/Build.csproj -- --configuration=${{ env.CONFIGURATION }} --srcDirectoryPath=${{ env.SRC_DIRECTORY_PATH_LIB }} --nugetVersion=${{ env.NUGET_VERSION }}
-    - name: Publish NuGet - Lib
-      run: dotnet nuget push "${{ env.SRC_DIRECTORY_PATH_LIB }}/${{ env.PROJECT_NAME_LIB }}/bin/${{ env.CONFIGURATION }}/cake-build-output/*${{ env.NUGET_VERSION }}.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_API_KEY }}
-    - name: Cake Frosting Build - Mapper
-      run: dotnet run --project ${{ env.PROJECT_NAME_MAPPER }}/build/Build.csproj -- --configuration=${{ env.CONFIGURATION }} --srcDirectoryPath=${{ env.SRC_DIRECTORY_PATH_MAPPER }} --nugetVersion=${{ env.NUGET_VERSION }}
-    - name: Publish NuGet - Mapper
-      run: dotnet nuget push "${{ env.SRC_DIRECTORY_PATH_MAPPER }}/${{ env.PROJECT_NAME_MAPPER }}/bin/${{ env.CONFIGURATION }}/cake-build-output/*${{ env.NUGET_VERSION }}.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_API_KEY }}
-
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Cake Frosting Build - Lib
+        run: dotnet run --project ${{ env.PROJECT_NAME_LIB }}/build/Build.csproj -- --configuration=${{ env.CONFIGURATION }} --srcDirectoryPath=${{ env.SRC_DIRECTORY_PATH_LIB }} --nugetVersion=${{ env.NUGET_VERSION }}
+      - name: Publish NuGet - Lib
+        run: dotnet nuget push "${{ env.SRC_DIRECTORY_PATH_LIB }}/${{ env.PROJECT_NAME_LIB }}/bin/${{ env.CONFIGURATION }}/cake-build-output/*${{ env.NUGET_VERSION }}.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_API_KEY }}
+      - name: Cake Frosting Build - Mapper
+        run: dotnet run --project ${{ env.PROJECT_NAME_MAPPER }}/build/Build.csproj -- --configuration=${{ env.CONFIGURATION }} --srcDirectoryPath=${{ env.SRC_DIRECTORY_PATH_MAPPER }} --nugetVersion=${{ env.NUGET_VERSION }}
+      - name: Publish NuGet - Mapper
+        run: dotnet nuget push "${{ env.SRC_DIRECTORY_PATH_MAPPER }}/${{ env.PROJECT_NAME_MAPPER }}/bin/${{ env.CONFIGURATION }}/cake-build-output/*${{ env.NUGET_VERSION }}.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_API_KEY }}

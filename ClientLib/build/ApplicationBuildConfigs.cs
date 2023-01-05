@@ -16,7 +16,7 @@ public record ProjectPaths(
 {
     public static ProjectPaths LoadFromContext(ICakeContext context, string buildConfiguration, string srcDirectory)
     {
-        var projectName = "EfCoreCosmosDbIndexConfigurationLib";
+        var projectName = "ClientLib";
         var pathToSln = srcDirectory + $"/{projectName}.sln";
         var functionProjectDir = srcDirectory + $"/{projectName}";
         var functionCsprojFile = functionProjectDir + $"/{projectName}.csproj";

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfCoreCosmosDbIndexConfigurationMapper", "EfCoreCosmosDbIndexConfigurationMapper\EfCoreCosmosDbIndexConfigurationMapper.csproj", "{FF6BAE98-07BA-485B-8E1E-F398390C1841}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IndexMapper", "IndexMapper\IndexMapper.csproj", "{FF6BAE98-07BA-485B-8E1E-F398390C1841}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{7C98B32E-5201-4132-A1CD-C406A721B67D}"
 EndProject

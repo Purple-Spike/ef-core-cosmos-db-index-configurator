@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfCoreCosmosDbIndexConfigurationLib", "EfCoreCosmosDbIndexConfigurationLib\EfCoreCosmosDbIndexConfigurationLib.csproj", "{055EFE06-E2C1-4723-A53B-2B3D4FCA3AD7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientLib", "ClientLib\ClientLib.csproj", "{055EFE06-E2C1-4723-A53B-2B3D4FCA3AD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
