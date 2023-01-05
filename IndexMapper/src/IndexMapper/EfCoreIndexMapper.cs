@@ -8,6 +8,9 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 
 using PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ConfigurationLib;
+using PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.IndexMapper.PropertyMappers;
+
+using static PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.IndexMapper.MappedIndexes;
 
 namespace PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.IndexMapper;
 
@@ -23,6 +26,9 @@ public interface IEfCoreIndexMapper
 
 public class EfCoreIndexMapper : IEfCoreIndexMapper
 {
+    private readonly IndexPropertyMapper _indexMapper = new IndexPropertyMapper();
+    private readonly PartitionKeyPropertyMapper _partitionKeyMapper = new PartitionKeyPropertyMapper();
+
     /// <summary>
     /// 
     /// </summary>
@@ -42,73 +48,14 @@ public class EfCoreIndexMapper : IEfCoreIndexMapper
         foreach (var dbSetProperty in dbSetProperties)
         {
             var genericType = dbSetProperty.PropertyType.GenericTypeArguments.Single();
-            var includedIndexes = LoadIncludedIndexesForType(genericType, indexPath: "/");
+            var partitionKey = _partitionKeyMapper.MapPropertyWithAttribute(genericType, indexPath: "/");
+            var indexes = _indexMapper.MapPropertiesWithAttribute(genericType, indexPath: "/");
 
-            var mappedIndexes = new MappedIndexes(Container: dbSetProperty.Name, includedIndexes);
+            var mappedIndexes = new MappedIndexes(ContainerName: dbSetProperty.Name, partitionKey, indexes);
             builder.Add(mappedIndexes);
         }
 
         return builder.MoveToImmutable();
-    }
-
-    private ImmutableArray<MappedIndexes.MappedIndex> LoadIncludedIndexesForType(Type genericType, string indexPath)
-    {
-        var builder = ImmutableArray.CreateBuilder<MappedIndexes.MappedIndex>();
-
-        foreach (var property in genericType.GetRuntimeProperties())
-        {
-            if (property.GetMethod is object
-                && !property.GetMethod.IsStatic)
-            {
-                var propertyIndexPath = $"{indexPath}{property.Name}/";
-
-                var includeIndexAttr = property.GetCustomAttribute<IncludeIndexAttribute>();
-                if (includeIndexAttr is object)
-                {
-                    MappedIndexes.MappedIndex mappedIndex;
-                    if (IsPropertyScalar(property))
-                    {
-                        mappedIndex = new MappedIndexes.MappedIndex($"{propertyIndexPath}?");
-                    }
-                    else
-                    {
-                        mappedIndex = new MappedIndexes.MappedIndex($"{propertyIndexPath}*");
-                    }
-
-                    builder.Add(mappedIndex);
-                }
-                else if (property.PropertyType.IsAssignableTo(typeof(IEnumerable)))
-                {
-                    if (property.PropertyType.IsGenericType)
-                    {
-                        //List<> or Something like that
-                        foreach (var genericArgumentType in property.PropertyType.GenericTypeArguments)
-                        {
-                            var collectionSubTypes = LoadIncludedIndexesForType(genericArgumentType, $"{propertyIndexPath}[]/");
-                            builder.AddRange(collectionSubTypes);
-                        }
-                    }
-                    else if (property.PropertyType.IsArray)
-                    {
-                        //An array
-                        var elementType = property.PropertyType.GetElementType();
-                        if (elementType is object)
-                        {
-                            var collectionSubTypes = LoadIncludedIndexesForType(elementType, $"{propertyIndexPath}[]/");
-                            builder.AddRange(collectionSubTypes);
-                        }
-                    }
-                }
-                else if (property.PropertyType != typeof(object) 
-                    && !IsPropertyScalar(property))
-                {
-                    var objectSubTypes = LoadIncludedIndexesForType(property.PropertyType, $"{propertyIndexPath}");
-                    builder.AddRange(objectSubTypes);
-                }
-            }
-        }
-
-        return builder.ToImmutable();
     }
 
     private ImmutableArray<PropertyInfo> LoadDbSetProperties(TypeInfo customContextType)
@@ -138,21 +85,5 @@ public class EfCoreIndexMapper : IEfCoreIndexMapper
         }
 
         return customContextType;
-    }
-
-    private bool IsPropertyScalar(PropertyInfo property)
-    {
-        return property.PropertyType.IsAssignableTo(typeof(string))
-               || property.PropertyType.IsAssignableTo(typeof(int))
-               || property.PropertyType.IsAssignableTo(typeof(decimal))
-               || property.PropertyType.IsAssignableTo(typeof(double))
-               || property.PropertyType.IsAssignableTo(typeof(float))
-               || property.PropertyType.IsAssignableTo(typeof(long))
-               || property.PropertyType.IsAssignableTo(typeof(short))
-               || property.PropertyType.IsAssignableTo(typeof(bool))
-               || property.PropertyType.IsAssignableTo(typeof(Guid))
-               || property.PropertyType.IsAssignableTo(typeof(DateTime))
-               || property.PropertyType.IsAssignableTo(typeof(DateOnly))
-               || property.PropertyType.IsAssignableTo(typeof(TimeOnly));
     }
 }

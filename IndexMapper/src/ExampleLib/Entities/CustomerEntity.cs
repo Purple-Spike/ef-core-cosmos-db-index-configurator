@@ -10,6 +10,7 @@ namespace PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ExampleLib.Enti
 
 public class CustomerEntity
 {
+    [IncludePartitionKeyAttribute]
     [IncludeIndex]
     public required Guid EntityId { get; set; }
 
