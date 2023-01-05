@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
-		<RootNamespace>PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.Mapper</RootNamespace>
-		<AssemblyName>PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.Mapper</AssemblyName>
+		<RootNamespace>PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.IndexMapper</RootNamespace>
+		<AssemblyName>PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.IndexMapper</AssemblyName>
 	</PropertyGroup>
 
 	<PropertyGroup>

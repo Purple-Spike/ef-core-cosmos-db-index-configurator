@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-using PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.Mapper;
+using PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.IndexMapper;
 
 using Shouldly;
 

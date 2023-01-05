@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 using PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ConfigurationLib;
 
-namespace PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.Mapper;
+namespace PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.IndexMapper;
 
 public interface IEfCoreIndexMapper
 {

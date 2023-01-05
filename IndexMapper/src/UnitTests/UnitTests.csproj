@@ -5,8 +5,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
-		<RootNamespace>PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.Mapper.UnitTests</RootNamespace>
-		<AssemblyName>PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.Mapper.UnitTests</AssemblyName>
+		<RootNamespace>PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.IndexMapper.UnitTests</RootNamespace>
+		<AssemblyName>PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.IndexMapper.UnitTests</AssemblyName>
 
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
