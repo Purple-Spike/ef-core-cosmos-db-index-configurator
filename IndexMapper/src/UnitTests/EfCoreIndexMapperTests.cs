@@ -24,7 +24,7 @@ public class EfCoreIndexMapperTests
     {
         var pwd = Directory.GetCurrentDirectory();
         var resultPath = pwd + $"/ExampleLib.dll";
-        var assembly = Assembly.LoadFile(resultPath);
+        var assembly = Assembly.LoadFrom(resultPath);
         var contextPath = "PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ExampleLib.MyDbContext";
         var mappedIndexes = _mapper.MapIndexes(assembly, contextPath);
 
