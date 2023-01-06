@@ -2,8 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +24,7 @@ public interface IEfCoreIndexMapper
     /// </summary>
     /// <param name="assembly">Assembly to load from</param>
     /// <param name="contextFullName">Full namespace path of the DBContext to interrogate</param>
-    ImmutableArray<MappedIndexes> MapIndexes(Assembly assembly, string contextFullName);
+    ImmutableArray<MappedIndexes> MapIndexes(string assemblyPath, string contextNamespace, string contextClass);
 }
 
 public class EfCoreIndexMapper : IEfCoreIndexMapper
@@ -34,11 +37,21 @@ public class EfCoreIndexMapper : IEfCoreIndexMapper
     /// </summary>
     /// <param name="assembly">Assembly to load from</param>
     /// <param name="contextFullName">Full namespace path of the DBContext to interrogate</param>
-    public ImmutableArray<MappedIndexes> MapIndexes(Assembly assembly, string contextFullName)
+    public ImmutableArray<MappedIndexes> MapIndexes(string assemblyPath, string contextNamespace, string contextClass)
     {
-        var customContextType = LoadDbContextTypeInfo(assembly, contextFullName);
-        var dbSetProperties = LoadDbSetProperties(customContextType);
-        return LoadMappedIndexesFromDbSetProperties(dbSetProperties);
+        ArgumentNullException.ThrowIfNull(assemblyPath);
+        ArgumentNullException.ThrowIfNull(contextNamespace);
+        ArgumentNullException.ThrowIfNull(contextClass);
+
+        using var fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        using var peReader = new PEReader(fs);
+
+        MetadataReader reader = peReader.GetMetadataReader();
+
+        var customContextType = LoadDbContextTypeInfo(reader, contextNamespace, contextClass);
+        var dbSetProperties = LoadDbSetProperties(reader, customContextType);
+        throw new Exception("Testing");
+        //return LoadMappedIndexesFromDbSetProperties(dbSetProperties);
     }
 
     private ImmutableArray<MappedIndexes> LoadMappedIndexesFromDbSetProperties(ImmutableArray<PropertyInfo> dbSetProperties)
@@ -58,32 +71,42 @@ public class EfCoreIndexMapper : IEfCoreIndexMapper
         return builder.MoveToImmutable();
     }
 
-    private ImmutableArray<PropertyInfo> LoadDbSetProperties(TypeInfo customContextType)
+    private ImmutableArray<PropertyInfo> LoadDbSetProperties(MetadataReader reader, TypeDefinition contextType)
     {
+        var builder = ImmutableArray.CreateBuilder<PropertyInfo>();
+
+        foreach (var propertyHandle in contextType.GetProperties())
+        {
+            var property = reader.GetPropertyDefinition(propertyHandle);
+            property.DecodeSignature(new EcmaSignatureTypeProviderForToString.Instance)
+        }
+
         var dbSetProperties = customContextType.DeclaredProperties.Where(x =>
             x.CanRead
             && x.GetMethod is object
             && !x.GetMethod.IsStatic
-            && x.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>)
+            //&& x.PropertyType.FullName.StartsWith.GetGenericTypeDefinition() == typeof(DbSet<>)
+            && x.PropertyType.FullName?.StartsWith("Microsoft.EntityFrameworkCore.DbSet'") is true
             ).ToImmutableArray();
-        return dbSetProperties;
+        return builder.ToImmutable();
     }
 
-    private TypeInfo LoadDbContextTypeInfo(Assembly assembly, string contextFullName)
+    private TypeDefinition LoadDbContextTypeInfo(MetadataReader reader, string contextNamespace, string contextClass)
     {
-        ArgumentNullException.ThrowIfNull(contextFullName);
-
-        var customContextType = assembly.DefinedTypes.FirstOrDefault(x => x.FullName == contextFullName);
-        if (customContextType is null)
+        foreach (var defHandle in reader.TypeDefinitions)
         {
-            throw new MissingContextTypeException($"Could not find define type named `{contextFullName}`");
+            var typeDef = reader.GetTypeDefinition(defHandle);
+            var typeName = reader.GetString(typeDef.Name);
+            var typeNamespace = reader.GetString(typeDef.Namespace);
+
+            if (typeName == contextClass
+                && typeNamespace == contextNamespace)
+            {
+                //var baseType = reader.GetTypeReference((TypeReferenceHandle)typeDef.BaseType);
+                return typeDef;
+            }
         }
 
-        if (!customContextType.IsAssignableTo(typeof(DbContext)))
-        {
-            throw new InvalidDbContextTypeException($"The loaded type `{contextFullName}` does not inherit from `{typeof(DbContext).FullName}`");
-        }
-
-        return customContextType;
+        throw new MissingContextTypeException($"Could not find define type named `{contextNamespace}.{contextClass}`");
     }
 }

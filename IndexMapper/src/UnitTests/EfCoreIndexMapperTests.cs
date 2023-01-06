@@ -4,6 +4,10 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,9 +28,28 @@ public class EfCoreIndexMapperTests
     {
         var pwd = Directory.GetCurrentDirectory();
         var resultPath = pwd + $"/ExampleLib.dll";
-        var assembly = Assembly.LoadFile(resultPath);
+
+        //// Get the array of runtime assemblies.
+        //string[] runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
+
+        //// Create the list of assembly paths consisting of runtime assemblies and the inspected assembly.
+        //var paths = new List<string>(runtimeAssemblies)
+        //{
+        //    resultPath
+        //};
+
+        //// Create PathAssemblyResolver that can resolve assemblies using the created list.
+        //var resolver = new PathAssemblyResolver(paths);
+
+        //var mlc = new MetadataLoadContext(resolver);
+        //var assembly = mlc.LoadFromAssemblyPath(resultPath);
+
+
+        //var assembly = Assembly.ReflectionOnlyLoad(resultPath);
+        //var assembly = Assembly.LoadFile(resultPath);
         var contextPath = "PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ExampleLib.MyDbContext";
-        var mappedIndexes = _mapper.MapIndexes(assembly, contextPath);
+        //var mappedIndexes = _mapper.MapIndexes(assembly, contextPath);
+        var mappedIndexes = _mapper.MapIndexes(resultPath, "PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ExampleLib", "MyDbContext");
 
         mappedIndexes.Length.ShouldBe(2);
 
