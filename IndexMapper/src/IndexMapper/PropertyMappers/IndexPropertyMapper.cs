@@ -59,6 +59,7 @@ public class IndexPropertyMapper
                     }
                 }
                 else if (property.PropertyType != typeof(object)
+                    && property.PropertyType != typeof(Type)
                     && !Utilities.IsPropertyScalar(property))
                 {
                     var objectSubTypes = MapPropertiesWithAttribute(property.PropertyType, $"{propertyIndexPath}");

@@ -28,7 +28,7 @@ public class EfCoreIndexMapperTests
         var contextPath = "PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ExampleLib.MyDbContext";
         var mappedIndexes = _mapper.MapIndexes(assembly, contextPath);
 
-        mappedIndexes.Length.ShouldBe(2);
+        mappedIndexes.Length.ShouldBe(3);
 
         var customersContainer = mappedIndexes.Single(x => x.ContainerName == "Customers");
         customersContainer.PartitionKey.ShouldBe("/EntityId");
@@ -65,5 +65,12 @@ public class EfCoreIndexMapperTests
         productsContainer.IncludedIndexes.Any(x => x == "/PopularityRating/?").ShouldBeTrue();
         productsContainer.IncludedIndexes.Any(x => x == "/DisplayOrder/?").ShouldBeTrue();
         productsContainer.IncludedIndexes.Any(x => x == "/UserPoints/?").ShouldBeTrue();
+
+        var ordersContainer = mappedIndexes.Single(x => x.ContainerName == "Orders");
+        ordersContainer.PartitionKey.ShouldBe("/EntityId");
+
+        ordersContainer.IncludedIndexes.Length.ShouldBe(2);
+        ordersContainer.IncludedIndexes.Any(x => x == "/EntityId/?").ShouldBeTrue();
+        ordersContainer.IncludedIndexes.Any(x => x == "/ProductName/?").ShouldBeTrue();
     }
 }

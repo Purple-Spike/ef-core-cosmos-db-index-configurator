@@ -25,6 +25,9 @@ public class MyDbContext : DbContext
     [NotNull]
     public DbSet<ProductEntity>? Products { get; set; }
 
+    [NotNull]
+    public DbSet<OrderEntity>? Orders { get; set; }
+    
     public MyDbContext(DbContextOptions<MyDbContext> options, MyDatabaseConfig databaseConfig)
         : base(options)
     {
