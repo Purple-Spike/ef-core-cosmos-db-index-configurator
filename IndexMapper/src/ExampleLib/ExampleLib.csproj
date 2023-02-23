@@ -16,8 +16,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Azure.Identity" Version="1.8.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="7.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="7.0.3" />
 		<PackageReference Include="PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.ConfigurationLib" Version="0.0.1-preview.17" />
 	</ItemGroup>
 

@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.IndexMapper;
-using PurpleSpikeProductions.EfCoreCosmosDbIndexConfigurator.IndexMapper.PropertyMappers;
 using Shouldly;
 
 using Xunit;
