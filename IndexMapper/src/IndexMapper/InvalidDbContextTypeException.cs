@@ -16,8 +16,4 @@ internal class InvalidDbContextTypeException : Exception
     public InvalidDbContextTypeException(string? message, Exception? innerException) : base(message, innerException)
     {
     }
-
-    protected InvalidDbContextTypeException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-    }
 }

@@ -16,8 +16,4 @@ internal class MissingContextTypeException : Exception
     public MissingContextTypeException(string? message, Exception? innerException) : base(message, innerException)
     {
     }
-
-    protected MissingContextTypeException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-    }
 }
