@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CONFIGURATION: Release
-      DOTNET_VERSION: 7.0.x
+      DOTNET_VERSION: 8.0.x
       NUGET_VERSION: 0.0.1-preview.${{ github.run_number }}
       SRC_DIRECTORY_PATH_LIB: ${{ github.workspace }}/ClientLib/src
       PROJECT_NAME_LIB: ClientLib
